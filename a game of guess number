@@ -1,0 +1,34 @@
+import random
+n = random.randint(1,100) #生成一个1-100的随机整数
+step = 0
+
+def get_number():
+	while True:
+		guess = input('Please input a number from 1 to 100:')
+		if guess.isdigit():
+			return int(guess)
+		else:
+			print('您输入的不是数字，重新输入：')
+		
+print("Game start")
+low = 1
+high =100		
+
+while True:
+	step+=1
+	print('step',step)
+	guess=get_number()
+	if guess ==0:
+		print('您选择退出游戏')
+		break
+	if guess<n:
+		low = guess
+		print(guess,'is low,the number is between',low,'and',high,'try again!')
+	elif guess>n:
+		high = guess
+		print(guess,'is high,the number is between',low,'and',high,'try again!')
+	else:
+		print("Yes,correct!You Win!")
+		break
+	
+print("Game over")
