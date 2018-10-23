@@ -1,0 +1,23 @@
+import time
+
+def LookTime(f1):
+	def inner():
+		start = time.time()
+		print(f1('ads'))
+		end = time.time()
+		print("%s's time:"%f1,end-start)
+	return inner
+
+@LookTime
+def Type(x):
+	if type(x)==str:
+		return True
+	
+
+Type()	
+
+@LookTime
+def Isinstance(x):
+	return isinstance(x,str)
+	
+Isinstance()
