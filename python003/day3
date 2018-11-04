@@ -1,0 +1,77 @@
+# 练习1
+# 定义一个函数，输入不定个数的数字，返回所有数字的和。
+
+def fun_num(*args):
+	print(*args)
+	print(args)
+	return sum(list(args))
+	
+b = fun_num(12,34,555,622,12)
+print(b)
+
+
+# 练习2
+# 简述你对global理解
+# 在函数中只能调用全局变量，而不能修改； global的作用就是使全局变量在局部函数中能被修改。
+a = 100
+def f():
+	global a
+	a = a+1
+	print(a*2)
+f()
+print(a)
+
+# 练习3
+# 编写一个函数，输入n为偶数时，返回函数,用返回的函数求1/2+1/4+...+1/n,当输入n为奇数时，返回函数,调用返回的函数1/1+1/3+...+1/n
+
+def func1(n):
+		count = 0
+		for i in range(2,n+1,2):
+			count += 1/i
+		return count
+	
+def func2(n):
+	count = 0
+	for i in range(1,n+1,2):
+		count += 1/i
+	return count
+
+
+def func(x):
+	if x%2 == 0:
+		return func1(x)
+	else:
+		return func2(x)
+	
+a = func(5)
+print(a)		
+
+
+
+
+# 练习4
+#写函数，判断用户传入的对象（字符串、列表、元组）长度是否大于5
+def len5(x):
+	if len(x)>5:
+		return True
+	else:
+		return False
+
+print(len5([12,3,45,4,5,7]))
+
+# 练习5
+#使用匿名函数对1~1000求和，代码力求简洁。
+a = lambda :sum(range(1,1001))
+print(a())
+
+#练习6
+#指明下方函数的调用顺序
+
+def func(name):
+    def inner_func(age):
+        print('name:', name, 'age:', age)
+    return inner_func
+new_func = func('the5fire')
+new_func(26)
+
+先调用func，它返回inner_func函数，用new_func来接收，此时new_func=inner_func；再调用new_func，等于调用了inner_func，执行了打印的命令。
