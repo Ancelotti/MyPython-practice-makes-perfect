@@ -1,0 +1,70 @@
+'''
+1.歌曲名称
+2、搜索url
+3.MP4 url
+4.存储到本地
+搜索链接
+http://songsearch.kugou.com/song_search_v2?keyword={}&page=1&pagesize=30&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0&_=1541589875194
+这个链接含有MP3的链接
+http://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash={}
+'''
+
+import requests
+import json
+import re
+import os
+
+class Downloader():
+	
+	def __init__(self):
+		self.search_url = 'http://songsearch.kugou.com/song_search_v2?keyword={}&page=1&pagesize=30&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0&_=1541589875194'
+		self.hash_url = 'http://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash={}'
+		self.headers ={
+		'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36'
+		}
+		
+	def run(self,keyword,num=1):
+		
+		#搜索歌曲
+		result = requests.get(url=self.search_url.format(keyword),headers=self.headers)
+		print(result.text)
+		#判断是否越界
+		dic = json.loads(result.text)
+		songlist = dic['data']['lists']
+		#print(songlist)
+		
+		#获取hash
+		filehash = re.findall('"FileHash":"(.*?)"',result.text)
+		songname = re.findall('"SongName":"(.*?)"',result.text)
+		print(songname)
+		#保存路径
+		if not os.path.exists('./results'):
+			os.mkdir('./results')
+			
+		names = []
+		#歌曲文件名字   爱你.mp3
+		for n in range(num):
+			name = songname[n].replace("<\\/em>","").replace("<em>","")+'.mp3'
+			if name in names:
+				name =str(n)+name
+			names.append(name)
+			
+			content = requests.get(self.hash_url.format(filehash[n]))
+		#
+			url = re.findall('"play_url":"(.*?)"',content.text)[0]
+		#链接中\\替换
+			download_url = url.replace("\\","")
+			with open('1.txt','w') as f1:
+				f1.write(download_url)
+		
+		#写入文件
+			with open('./results/{}'.format(name),'wb') as f:
+				f.write(requests.get(download_url).content)
+		
+	
+keyword = input('请输入歌曲:')
+songnum = input('请输入下载量:')
+songnum = int(songnum)
+
+loader = Downloader()
+loader.run(keyword,songnum)
